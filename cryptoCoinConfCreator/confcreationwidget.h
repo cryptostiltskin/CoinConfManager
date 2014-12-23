@@ -1,3 +1,5 @@
+// ~CryptAxe
+
 #ifndef CONFCREATIONWIDGET_H
 #define CONFCREATIONWIDGET_H
 
@@ -15,6 +17,11 @@ public:
     explicit ConfCreationWidget(QWidget *parent = 0);
     ~ConfCreationWidget();
     
+private slots:
+    void on_pushButton_browse_clicked();
+
+    void on_radioButton_linux_toggled(bool checked);
+
 private:
     Ui::ConfCreationWidget *ui;
 };
