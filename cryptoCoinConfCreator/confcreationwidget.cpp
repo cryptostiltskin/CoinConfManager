@@ -102,7 +102,15 @@ void ConfCreationWidget::on_pushButton_Save_clicked()
 QString ConfCreationWidget::detectDataDir()
 {
     if (!osString.isEmpty()) {
-
+        if (osString == "unix") {
+            return "~/.coin";
+        } else if (osString == "mac") {
+            return "~/Library/Application Support/coin/";
+        } else if (osString == "windows") {
+            return "%APPDATA%\\coin\\";
+        } else {
+            return "";
+        }
     } else {
         return "";
     }
@@ -111,16 +119,27 @@ QString ConfCreationWidget::detectDataDir()
 QString ConfCreationWidget::detectOperatingSystem()
 {
 #ifdef _WIN32
+    ui->radioButton_windows->setChecked(true);
     return "windows";
+
 #elif _WIN64
+    ui->radioButton_windows->setChecked(true);
     return "windows";
+
 #elif __unix || __unix__
+    ui->radioButton_linux->setChecked(true);
     return "unix";
+
 #elif __linux__
+    ui->radioButton_linux->setChecked(true);
     return "unix";
+
 #elif __APPLE__ || __MACH__
+    ui->radioButton_mac->setChecked(true);
     return "mac";
+
 #else
     return "";
+
 #endif
 }
