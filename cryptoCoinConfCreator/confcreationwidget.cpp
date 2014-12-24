@@ -3,6 +3,8 @@
 
 #include <QDebug>
 #include <QFileDialog>
+#include <QFile>
+#include <QMessageBox>
 
 ConfCreationWidget::ConfCreationWidget(QWidget *parent) :
     QWidget(parent),
@@ -127,12 +129,12 @@ void ConfCreationWidget::on_comboBox_selectCoin_currentIndexChanged(int index)
 
 void ConfCreationWidget::on_pushButton_cancel_clicked()
 {
-
+    QApplication::quit();
 }
 
 void ConfCreationWidget::on_pushButton_Save_clicked()
 {
-
+    writeConfFile();
 }
 
 QString ConfCreationWidget::detectDataDir()
@@ -143,13 +145,12 @@ QString ConfCreationWidget::detectDataDir()
 
     if (!osString.isEmpty()) {
         if (osString == "unix") {
-            QString returnString = "~/." + coinName;
-            qDebug() << returnString;
-            return "~/." + coinName;
+            QString returnString = QDir::homePath() + "/." + coinName + "/" + coinName + ".conf";
+            return returnString;
         } else if (osString == "mac") {
-            return "~/Library/Application Support/" + coinName + "/";
+            return QDir::homePath() + "/Library/Application Support/" + coinName + "/" + coinName + ".conf";
         } else if (osString == "windows") {
-            return "%APPDATA%\\" + coinName + "\\";
+            return "%APPDATA%\\" + coinName + "\\" + coinName + ".conf";;
         } else {
             return "";
         }
@@ -187,9 +188,56 @@ QString ConfCreationWidget::detectOperatingSystem()
 }
 
 QString ConfCreationWidget::formConfText() {
-    return "";
+    return "conffile";
 }
 
 bool ConfCreationWidget::writeConfFile() {
+    // Exit the function if there is nothing to write
+    if (formConfText().isEmpty()) {
+        return false;
+    }
+
+    // Check that we can open the file and write to it
+    QFile confFile(ui->lineEdit_detectedLocation->text());
+
+    if (confFile.exists()) {
+        qDebug() << "File already exists\n" << confFile.fileName() << "\n";
+        QMessageBox overwriteMessage;
+        overwriteMessage.setText("Configuration file already exists!");
+        overwriteMessage.setInformativeText("Do you want to overwrite your configuration file?");
+        overwriteMessage.setStandardButtons(QMessageBox::Cancel | QMessageBox::Save);
+        overwriteMessage.setDefaultButton(QMessageBox::Cancel);
+        int overwriteReturn = overwriteMessage.exec();
+
+        switch (overwriteReturn) {
+        case QMessageBox::Cancel:
+            return false;
+            break;
+        case QMessageBox::Save:
+            break;
+        default:
+            return false;
+            break;
+        }
+
+    } else {
+        qDebug() << "File does not exist\n" << confFile.fileName() << "\n";
+    }
+
+    if (!confFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "sorry dave\n";
+        return false;
+    } else {
+        QTextStream out(&confFile);
+        out << formConfText();
+        if (confFile.error()) {
+            qDebug() << "ERRPR\n";
+            return false;
+        } else {
+            qDebug() << "noerr\n";
+            return true;
+        }
+    }
+    confFile.close();
     return false;
 }
