@@ -110,7 +110,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_4">
+           <widget class="QLineEdit" name="lineEdit_detectedLocation">
             <property name="placeholderText">
              <string>Auto Detected Default Location</string>
             </property>
@@ -413,7 +413,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_13"/>
+           <widget class="QLineEdit" name="lineEdit_RPCAllowIP"/>
           </item>
           <item>
            <widget class="QLabel" name="label_11">
@@ -423,7 +423,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_14"/>
+           <widget class="QLineEdit" name="lineEdit_RPCConnect"/>
           </item>
           <item>
            <widget class="QLabel" name="label_7">

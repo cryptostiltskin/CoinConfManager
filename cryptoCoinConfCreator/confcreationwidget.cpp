@@ -10,7 +10,7 @@ ConfCreationWidget::ConfCreationWidget(QWidget *parent) :
     ui->setupUi(this);
     qDebug() << "Os Detected" << detectOperatingSystem() << "\n";
     osString = detectOperatingSystem();
-
+    ui->lineEdit_detectedLocation->setText(detectDataDir());
 }
 
 ConfCreationWidget::~ConfCreationWidget()
