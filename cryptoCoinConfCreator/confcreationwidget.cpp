@@ -1,11 +1,16 @@
 #include "confcreationwidget.h"
 #include "ui_confcreationwidget.h"
 
+#include <QDebug>
+
 ConfCreationWidget::ConfCreationWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ConfCreationWidget)
 {
     ui->setupUi(this);
+    qDebug() << "Os Detected" << detectOperatingSystem() << "\n";
+    osString = detectOperatingSystem();
+
 }
 
 ConfCreationWidget::~ConfCreationWidget()
@@ -21,21 +26,21 @@ void ConfCreationWidget::on_pushButton_browse_clicked()
 void ConfCreationWidget::on_radioButton_linux_toggled(bool checked)
 {
     if (checked) {
-        selectedOS = 0;
+        osString = "unix";
     }
 }
 
 void ConfCreationWidget::on_radioButton_mac_toggled(bool checked)
 {
     if (checked) {
-        selectedOS = 1;
+        osString = "mac";
     }
 }
 
 void ConfCreationWidget::on_radioButton_windows_toggled(bool checked)
 {
     if (checked) {
-        selectedOS = 2;
+        osString = "windows";
     }
 }
 
@@ -92,4 +97,30 @@ void ConfCreationWidget::on_pushButton_cancel_clicked()
 void ConfCreationWidget::on_pushButton_Save_clicked()
 {
 
+}
+
+QString ConfCreationWidget::detectDataDir()
+{
+    if (!osString.isEmpty()) {
+
+    } else {
+        return "";
+    }
+}
+
+QString ConfCreationWidget::detectOperatingSystem()
+{
+#ifdef _WIN32
+    return "windows";
+#elif _WIN64
+    return "windows";
+#elif __unix || __unix__
+    return "unix";
+#elif __linux__
+    return "unix";
+#elif __APPLE__ || __MACH__
+    return "mac";
+#else
+    return "";
+#endif
 }

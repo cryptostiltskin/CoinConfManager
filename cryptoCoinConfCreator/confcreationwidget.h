@@ -16,6 +16,8 @@ class ConfCreationWidget : public QWidget
 public:
     explicit ConfCreationWidget(QWidget *parent = 0);
     ~ConfCreationWidget();
+    QString detectDataDir();
+    QString detectOperatingSystem();
     
 private slots:
     void on_pushButton_browse_clicked();
@@ -51,12 +53,6 @@ private slots:
 private:
     Ui::ConfCreationWidget *ui;
     int selectCoinIndex;
-    /*
-     * 0 = Linux
-     * 1 = Mac OSX
-     * 2 = Windows
-     */
-    int selectedOS;
     QString confDirectory;
     bool serverEnabled;
     int RPCPort;
@@ -78,6 +74,9 @@ private:
     bool receiveByIPEnabled;
     int maxConnections;
     int rpcTimeout;
+
+    // String representing operating system detected
+    QString osString;
 };
 
 #endif // CONFCREATIONWIDGET_H
