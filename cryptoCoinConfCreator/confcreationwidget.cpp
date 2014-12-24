@@ -185,3 +185,11 @@ QString ConfCreationWidget::detectOperatingSystem()
 
 #endif
 }
+
+QString ConfCreationWidget::formConfText() {
+    return "";
+}
+
+bool ConfCreationWidget::writeConfFile() {
+    return false;
+}

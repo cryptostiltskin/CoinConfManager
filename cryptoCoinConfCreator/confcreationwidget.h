@@ -16,8 +16,23 @@ class ConfCreationWidget : public QWidget
 public:
     explicit ConfCreationWidget(QWidget *parent = 0);
     ~ConfCreationWidget();
+    // Detect the data directory (default location based on OS)
     QString detectDataDir();
+    // Use compiler macros to detect OS
     QString detectOperatingSystem();
+    // Returns the text to be added to the conf file
+    QString formConfText();
+    /*
+     * Writes the text returned by formConfText() to the
+     * selected file after:
+     *
+     * -User confirms location
+     * -Double check if over writing file
+     *
+     * @return true if file written
+     *
+     */
+    bool writeConfFile();
     
 private slots:
     void on_pushButton_browse_clicked();
