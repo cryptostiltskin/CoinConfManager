@@ -74,6 +74,7 @@ private:
     bool receiveByIPEnabled;
     int maxConnections;
     int rpcTimeout;
+    QString coinName;
 
     // String representing operating system detected
     QString osString;

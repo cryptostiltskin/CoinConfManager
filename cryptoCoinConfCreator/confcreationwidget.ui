@@ -237,7 +237,7 @@
              <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Sunken</enum>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
@@ -338,7 +338,7 @@
              <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Sunken</enum>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
              <item>
