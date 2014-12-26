@@ -14,7 +14,7 @@ ConfCreationWidget::ConfCreationWidget(QWidget *parent) :
 
     serverEnabled = false;
     generateEnabled = false;
-    addNodesEnabled = false;
+    addNodesEnabled = true;
     connectOnlyEnabled = false;
     testnetEnabled = false;
     startMinEnabled = false;
@@ -199,9 +199,8 @@ QString ConfCreationWidget::detectOperatingSystem()
 
 QString ConfCreationWidget::formConfText() {
     QString confText;
-    confText.append("line one\n");
-    confText.append("\n");
-    confText.append("line two\n");
+
+    // Basic Settings
 
     if (serverEnabled) {
         confText.append("server=1\n");
@@ -231,20 +230,73 @@ QString ConfCreationWidget::formConfText() {
         confText.append("\n");
     }
 
+    // Node settings
+
     // eg connect= or addnode= depending on the selected mode
     QString nodePreText;
     if (addNodesEnabled) {
         nodePreText = "addnode=";
-
     } else if (connectOnlyEnabled) {
         nodePreText = "connect=";
     }
 
+    for (int i = 0; i < ui->listWidget_nodes->count(); i++) {
+        confText.append(nodePreText);
+        confText.append(ui->listWidget_nodes->itemAt(i, 0)->text());
+        confText.append("\n");
+    }
 
+    // Advanced/other settings
 
+    if (testnetEnabled) {
+        confText.append("testnet=1");
+        confText.append("\n");
+    }
 
+    if (startMinEnabled) {
+        confText.append("min=1");
+        confText.append("\n");
+    }
 
+    if (startTrayedEnabled) {
+        confText.append("minimizetotray=1");
+        confText.append("\n");
+    }
 
+    if (receiveByIPEnabled) {
+        confText.append("allowreceivebyip=1");
+        confText.append("\n");
+    }
+
+    if (ui->spinBox_maxConnections->value() != 0) {
+        confText.append("maxconnections=");
+        confText.append(ui->spinBox_maxConnections->value());
+        confText.append("\n");
+    }
+
+    if (ui->spinBox_RPCTimeout->value() != 0) {
+        confText.append("rpctimeout=");
+        confText.append(ui->spinBox_RPCTimeout->value());
+        confText.append("\n");
+    }
+
+    if (!ui->lineEdit_RPCAllowIP->text().isEmpty()) {
+        confText.append("rpcallowip=");
+        confText.append(ui->lineEdit_RPCAllowIP->text());
+        confText.append("\n");
+    }
+
+    if (!ui->lineEdit_RPCConnect->text().isEmpty()) {
+        confText.append("rpcconnect=");
+        confText.append(ui->lineEdit_RPCConnect->text());
+        confText.append("\n");
+    }
+
+    if (!ui->lineEdit_socks4->text().isEmpty()) {
+        confText.append("proxy=");
+        confText.append(ui->lineEdit_socks4->text());
+        confText.append("\n");
+    }
 
     return confText;
 }
