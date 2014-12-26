@@ -11,6 +11,16 @@ ConfCreationWidget::ConfCreationWidget(QWidget *parent) :
     ui(new Ui::ConfCreationWidget)
 {
     ui->setupUi(this);
+
+    serverEnabled = false;
+    generateEnabled = false;
+    addNodesEnabled = false;
+    connectOnlyEnabled = false;
+    testnetEnabled = false;
+    startMinEnabled = false;
+    startTrayedEnabled = false;
+    receiveByIPEnabled = false;
+
     qDebug() << "Os Detected" << detectOperatingSystem() << "\n";
     osString = detectOperatingSystem();
 
@@ -188,7 +198,55 @@ QString ConfCreationWidget::detectOperatingSystem()
 }
 
 QString ConfCreationWidget::formConfText() {
-    return "conffile";
+    QString confText;
+    confText.append("line one\n");
+    confText.append("\n");
+    confText.append("line two\n");
+
+    if (serverEnabled) {
+        confText.append("server=1\n");
+    }
+
+    if (!ui->lineEdit_rpcPort->text().isEmpty()) {
+        confText.append("rpcport=");
+        confText.append(ui->lineEdit_rpcPort->text());
+        qDebug() << ui->lineEdit_rpcPort->text() << "\n";
+        confText.append("\n");
+    }
+
+    if (!ui->lineEdit_rpcUser->text().isEmpty()) {
+        confText.append("rpcuser=");
+        confText.append(ui->lineEdit_rpcUser->text());
+        confText.append("\n");
+    }
+
+    if (!ui->lineEdit_rpcPassword->text().isEmpty()) {
+        confText.append("rpcpassword=");
+        confText.append(ui->lineEdit_rpcPassword->text());
+        confText.append("\n");
+    }
+
+    if (generateEnabled) {
+        confText.append("gen=1");
+        confText.append("\n");
+    }
+
+    // eg connect= or addnode= depending on the selected mode
+    QString nodePreText;
+    if (addNodesEnabled) {
+        nodePreText = "addnode=";
+
+    } else if (connectOnlyEnabled) {
+        nodePreText = "connect=";
+    }
+
+
+
+
+
+
+
+    return confText;
 }
 
 bool ConfCreationWidget::writeConfFile() {
@@ -219,7 +277,6 @@ bool ConfCreationWidget::writeConfFile() {
             return false;
             break;
         }
-
     } else {
         qDebug() << "File does not exist\n" << confFile.fileName() << "\n";
     }
@@ -240,4 +297,40 @@ bool ConfCreationWidget::writeConfFile() {
     }
     confFile.close();
     return false;
+}
+
+void ConfCreationWidget::on_pushButton_addNode_clicked()
+{
+    if (ui->lineedit_enterIP->text().isEmpty()) {
+        QMessageBox blankLine;
+        blankLine.setText("You have to put an IP address in there");
+        blankLine.setInformativeText("Please enter an IP address and port number.");
+        blankLine.setStandardButtons(QMessageBox::Ok);
+        blankLine.setDefaultButton(QMessageBox::Ok);
+        blankLine.exec();
+        return;
+    } else {
+        ui->listWidget_nodes->addItem(ui->lineedit_enterIP->text());
+        ui->lineedit_enterIP->clear();
+    }
+}
+
+void ConfCreationWidget::on_pushButton_clearNodeList_clicked()
+{
+    QMessageBox clearMessage;
+    clearMessage.setText("Clear the node list!");
+    clearMessage.setInformativeText("Are you sure?");
+    clearMessage.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
+    clearMessage.setDefaultButton(QMessageBox::Cancel);
+    int clearReturn = clearMessage.exec();
+
+    switch (clearReturn) {
+    case QMessageBox::Cancel:
+        break;
+    case QMessageBox::Ok:
+        ui->listWidget_nodes->clear();
+        break;
+    default:
+        break;
+    }
 }

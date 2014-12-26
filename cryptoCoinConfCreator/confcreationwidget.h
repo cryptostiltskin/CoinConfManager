@@ -65,6 +65,10 @@ private slots:
 
     void on_pushButton_Save_clicked();
 
+    void on_pushButton_addNode_clicked();
+
+    void on_pushButton_clearNodeList_clicked();
+
 private:
     Ui::ConfCreationWidget *ui;
     int selectCoinIndex;
@@ -76,13 +80,6 @@ private:
     bool generateEnabled;
     bool addNodesEnabled;
     bool connectOnlyEnabled;
-    QString node1;
-    QString node2;
-    QString node3;
-    QString node4;
-    QString node5;
-    QString node6;
-    QString node7;
     bool testnetEnabled;
     bool startMinEnabled;
     bool startTrayedEnabled;

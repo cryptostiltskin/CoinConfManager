@@ -62,7 +62,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -261,69 +261,36 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_node1">
-            <property name="placeholderText">
-             <string>Node IP ex: 192.168.0.1:8333</string>
+           <widget class="QFrame" name="frame_7">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
             </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <widget class="QLineEdit" name="lineedit_enterIP"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_addNode">
+               <property name="text">
+                <string>Add To List</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_node2">
+           <widget class="QListWidget" name="listWidget_nodes"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_clearNodeList">
             <property name="text">
-             <string/>
-            </property>
-            <property name="placeholderText">
-             <string>Node IP ex: 192.168.0.1:8333</string>
+             <string>Clear List</string>
             </property>
            </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_node3">
-            <property name="placeholderText">
-             <string>Node IP ex: 192.168.0.1:8333</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_node4">
-            <property name="placeholderText">
-             <string>Node IP ex: 192.168.0.1:8333</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_node5">
-            <property name="placeholderText">
-             <string>Node IP ex: 192.168.0.1:8333</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_node6">
-            <property name="placeholderText">
-             <string>Node IP ex: 192.168.0.1:8333</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_node7">
-            <property name="placeholderText">
-             <string>Node IP ex: 192.168.0.1:8333</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>
