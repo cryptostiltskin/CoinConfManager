@@ -242,7 +242,7 @@ QString ConfCreationWidget::formConfText() {
 
     for (int i = 0; i < ui->listWidget_nodes->count(); i++) {
         confText.append(nodePreText);
-        confText.append(ui->listWidget_nodes->itemAt(i, 0)->text());
+        confText.append(ui->listWidget_nodes->item(i)->text());
         confText.append("\n");
     }
 
@@ -270,13 +270,15 @@ QString ConfCreationWidget::formConfText() {
 
     if (ui->spinBox_maxConnections->value() != 0) {
         confText.append("maxconnections=");
-        confText.append(ui->spinBox_maxConnections->value());
+        int spinMax = ui->spinBox_maxConnections->value();
+        confText.append(QString::number(spinMax));
         confText.append("\n");
     }
 
     if (ui->spinBox_RPCTimeout->value() != 0) {
         confText.append("rpctimeout=");
-        confText.append(ui->spinBox_RPCTimeout->value());
+        int spinTimeout = ui->spinBox_RPCTimeout->value();
+        confText.append(QString::number(spinTimeout));
         confText.append("\n");
     }
 
