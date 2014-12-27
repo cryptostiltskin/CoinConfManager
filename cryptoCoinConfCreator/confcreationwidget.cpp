@@ -144,7 +144,8 @@ void ConfCreationWidget::on_pushButton_cancel_clicked()
 
 void ConfCreationWidget::on_pushButton_Save_clicked()
 {
-    writeConfFile();
+    bool written = writeConfFile();
+    qDebug() << "Conf file written? " << written << "\n";
 }
 
 QString ConfCreationWidget::detectDataDir()
@@ -306,6 +307,12 @@ QString ConfCreationWidget::formConfText() {
 bool ConfCreationWidget::writeConfFile() {
     // Exit the function if there is nothing to write
     if (formConfText().isEmpty()) {
+        QMessageBox emptyMessage;
+        emptyMessage.setText("You have nothing to save!");
+        emptyMessage.setInformativeText("You haven't entered any settings to save");
+        emptyMessage.setStandardButtons(QMessageBox::Ok);
+        emptyMessage.setDefaultButton(QMessageBox::Ok);
+        emptyMessage.exec();
         return false;
     }
 
@@ -342,10 +349,22 @@ bool ConfCreationWidget::writeConfFile() {
         QTextStream out(&confFile);
         out << formConfText();
         if (confFile.error()) {
-            qDebug() << "ERRPR\n";
+            qDebug() << "erorr\n";
+            QMessageBox errorMessage;
+            errorMessage.setText("Configuration file failed to write!");
+            errorMessage.setInformativeText("Double check your directory and permissions before trying again");
+            errorMessage.setStandardButtons(QMessageBox::Ok);
+            errorMessage.setDefaultButton(QMessageBox::Ok);
+            errorMessage.exec();
             return false;
         } else {
-            qDebug() << "noerr\n";
+            qDebug() << "no error\n";
+            QMessageBox writeMessage;
+            writeMessage.setText("Configuration file writen!");
+            writeMessage.setInformativeText("Your settings have been written to the conf file");
+            writeMessage.setStandardButtons(QMessageBox::Ok);
+            writeMessage.setDefaultButton(QMessageBox::Ok);
+            writeMessage.exec();
             return true;
         }
     }
