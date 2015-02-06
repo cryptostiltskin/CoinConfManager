@@ -2,7 +2,7 @@ Coin Conf Manager
 =====================
 
 =====================
-BUILDING:
+Building:
 =====================
 qmake
 
