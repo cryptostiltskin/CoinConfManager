@@ -134,7 +134,6 @@ void ConfCreationWidget::on_comboBox_selectCoin_currentIndexChanged(int index)
     switch (index) {
     case 0:
         coinName = "ATOMIC";
-        qDebug() << "coin name set to atomic\n";
         break;
     case 1:
         coinName = "bitcoin";
