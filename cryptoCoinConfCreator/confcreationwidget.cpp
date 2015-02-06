@@ -145,8 +145,6 @@ void ConfCreationWidget::on_comboBox_selectCoin_currentIndexChanged(int index)
     case 3:
         coinName = "litecoin";
         break;
-    case 4:
-        coinName = "nxt";
     default:
         break;
     }
@@ -165,10 +163,6 @@ void ConfCreationWidget::on_pushButton_Save_clicked()
 {
     bool written = writeConfFile();
     qDebug() << "Conf file written? " << written << "\n";
-    if (written) {
-        this->close();
-        emit confWidgetClosing();
-    }
 }
 
 QString ConfCreationWidget::detectDataDir()
@@ -386,11 +380,10 @@ bool ConfCreationWidget::writeConfFile() {
             writeMessage.setStandardButtons(QMessageBox::Ok);
             writeMessage.setDefaultButton(QMessageBox::Ok);
             writeMessage.exec();
-            return true;
         }
     }
     confFile.close();
-    return false;
+    return true;
 }
 
 void ConfCreationWidget::on_pushButton_addNode_clicked()

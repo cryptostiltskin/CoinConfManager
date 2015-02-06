@@ -43,11 +43,6 @@
        <string>Litecoin</string>
       </property>
      </item>
-     <item>
-      <property name="text">
-       <string>NXT</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item>
