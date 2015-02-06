@@ -1,7 +1,18 @@
-Crypto-Coin Conf Creator
+Coin Conf Manager
 =====================
 
-Create .conf files for your cryptocurrency wallets with this C++/Qt interface
+Create / Manage .conf files for your cryptocurrency wallets with this C++/Qt interface
+
+This tool will load all of the settings from your existing .conf file if one is found,
+and allow you to edit the settings in a nicer way.
+
+Currently supports the following wallets:
+ATOMIC
+Bitcoin
+Dogecoin
+Litecoin
+
+Contact CryptAxe or submit a merge reqest to add more. 
 
 =====================
 Created for use by the ATOMIC project to allow users to easily set RPC settings.
