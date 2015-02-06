@@ -1,12 +1,13 @@
 Coin Conf Manager
 =====================
 
-====================
+=====================
 BUILDING:
+=====================
 qmake
 make
-then ./CoinConfManager to run
-====================
+./CoinConfMananger to run
+
 
 Create / Manage .conf files for your cryptocurrency wallets with this C++/Qt interface
 
