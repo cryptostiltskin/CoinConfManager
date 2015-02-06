@@ -1,6 +1,6 @@
 Coin Conf Manager
 =====================
-
+![My image](http://www.cryptaxe.com/wp-content/uploads/2015/02/snapshot1.png)
 =====================
 Building:
 =====================
