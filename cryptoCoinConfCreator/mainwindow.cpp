@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     confWidget = new ConfCreationWidget(this);
     ui->verticalLayout_2->addWidget(confWidget);
+    connect(confWidget, SIGNAL(confWidgetClosing()),
+            this, SLOT(close()));
 }
 
 MainWindow::~MainWindow()

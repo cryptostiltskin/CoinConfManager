@@ -5,6 +5,9 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QMessageBox>
+#include <QTextStream>
+#include <QByteArray>
+#include <iostream>
 
 ConfCreationWidget::ConfCreationWidget(QWidget *parent) :
     QWidget(parent),
@@ -20,11 +23,23 @@ ConfCreationWidget::ConfCreationWidget(QWidget *parent) :
     startMinEnabled = false;
     startTrayedEnabled = false;
     receiveByIPEnabled = false;
+    allowedIP = "";
 
     qDebug() << "Os Detected" << detectOperatingSystem() << "\n";
     osString = detectOperatingSystem();
 
+    if (osString.isEmpty()) {
+        QMessageBox emptyMessage;
+        emptyMessage.setText("Operating System could not be detected!");
+        emptyMessage.setInformativeText("You will need to manual select your system type");
+        emptyMessage.setStandardButtons(QMessageBox::Ok);
+        emptyMessage.setDefaultButton(QMessageBox::Ok);
+        emptyMessage.exec();
+    }
+
     ui->lineEdit_detectedLocation->setText(detectDataDir());
+    ui->comboBox_selectCoin->setCurrentIndex(0);
+    on_comboBox_selectCoin_currentIndexChanged(0);
 }
 
 ConfCreationWidget::~ConfCreationWidget()
@@ -119,6 +134,7 @@ void ConfCreationWidget::on_comboBox_selectCoin_currentIndexChanged(int index)
     switch (index) {
     case 0:
         coinName = "ATOMIC";
+        qDebug() << "coin name set to atomic\n";
         break;
     case 1:
         coinName = "bitcoin";
@@ -134,26 +150,29 @@ void ConfCreationWidget::on_comboBox_selectCoin_currentIndexChanged(int index)
     default:
         break;
     }
+    resetUI();
     ui->lineEdit_detectedLocation->setText(detectDataDir());
+    loadExistingFromConf();
 }
 
 void ConfCreationWidget::on_pushButton_cancel_clicked()
 {
-    QApplication::quit();
+    this->close();
+    emit confWidgetClosing();
 }
 
 void ConfCreationWidget::on_pushButton_Save_clicked()
 {
     bool written = writeConfFile();
     qDebug() << "Conf file written? " << written << "\n";
+    if (written) {
+        this->close();
+        emit confWidgetClosing();
+    }
 }
 
 QString ConfCreationWidget::detectDataDir()
 {
-    if (coinName.isEmpty()) {
-        coinName = "ATOMIC";
-    }
-
     if (!osString.isEmpty()) {
         if (osString == "unix") {
             QString returnString = QDir::homePath() + "/." + coinName + "/" + coinName + ".conf";
@@ -317,7 +336,7 @@ bool ConfCreationWidget::writeConfFile() {
     }
 
     // Check that we can open the file and write to it
-    QFile confFile(ui->lineEdit_detectedLocation->text());
+    QFile confFile(detectDataDir());
 
     if (confFile.exists()) {
         qDebug() << "File already exists\n" << confFile.fileName() << "\n";
@@ -360,8 +379,10 @@ bool ConfCreationWidget::writeConfFile() {
         } else {
             qDebug() << "no error\n";
             QMessageBox writeMessage;
-            writeMessage.setText("Configuration file writen!");
-            writeMessage.setInformativeText("Your settings have been written to the conf file");
+            writeMessage.setText("Configuration file writen!, " \
+                                 "Your settings have been written to the conf file.\n");
+            writeMessage.setInformativeText("Important: You must restart your client before " \
+                                            "settings will be applied.");
             writeMessage.setStandardButtons(QMessageBox::Ok);
             writeMessage.setDefaultButton(QMessageBox::Ok);
             writeMessage.exec();
@@ -406,4 +427,198 @@ void ConfCreationWidget::on_pushButton_clearNodeList_clicked()
     default:
         break;
     }
+}
+QStringList ConfCreationWidget::get_ConfFileStrings()
+{
+    QFile confFile(detectDataDir());
+    QStringList confDataList;
+
+    // Quit if there is nothing to do.
+    if (!confFile.exists()) {
+        return confDataList;
+    }
+
+    // Check that we can open the file
+    if (!confFile.open(QIODevice::ReadOnly)) {
+        return confDataList;
+    }
+
+    QTextStream inStream(&confFile);
+    while (!inStream.atEnd()) {
+        // Read line as long as it is < 100 chars (in case long password)
+        QString newString = inStream.readLine(100);
+        confDataList << newString;
+    }
+    return confDataList;
+}
+
+QString ConfCreationWidget::get_confDirectory()
+{
+    return confDirectory;
+}
+
+bool ConfCreationWidget::get_serverEnabled()
+{
+    return serverEnabled;
+}
+
+int ConfCreationWidget::get_RPCPort()
+{
+    return RPCPort;
+}
+
+QString ConfCreationWidget::get_RPCUser()
+{
+    return RPCUser;
+}
+
+QString ConfCreationWidget::get_RPCPassword()
+{
+    return RPCPassword;
+}
+
+bool ConfCreationWidget::get_generateEnabled()
+{
+    return generateEnabled;
+}
+
+bool ConfCreationWidget::get_addNodesEnabled()
+{
+    return addNodesEnabled;
+}
+
+bool ConfCreationWidget::get_connectOnlyEnabled()
+{
+    return connectOnlyEnabled;
+}
+
+bool ConfCreationWidget::get_testnetEnabled()
+{
+    return testnetEnabled;
+}
+
+bool ConfCreationWidget::get_startMinEnabled()
+{
+    return startMinEnabled;
+}
+
+bool ConfCreationWidget::get_startTrayedEnabled()
+{
+    return startTrayedEnabled;
+}
+
+bool ConfCreationWidget::get_receiveByIPEnabled()
+{
+    return receiveByIPEnabled;
+}
+
+int ConfCreationWidget::get_maxConnections()
+{
+    return maxConnections;
+}
+
+int ConfCreationWidget::get_rpcTimeout()
+{
+    return rpcTimeout;
+}
+
+QString ConfCreationWidget::get_coinName()
+{
+    return coinName;
+}
+
+void ConfCreationWidget::loadExistingFromConf()
+{
+    QStringList existingData = get_ConfFileStrings();
+
+    for (int i = 0; i < existingData.count(); i++) {
+        QString line = existingData.at(i);
+
+        if (line.section("=", 0, 0) == "rpcuser") {
+            RPCUser = line.section("=", 1, 1);
+            ui->lineEdit_rpcUser->setText(RPCUser);
+
+        } else if (line.section("=", 0, 0) == "rpcpassword") {
+            RPCPassword = line.section("=", 1, 1);
+            ui->lineEdit_rpcPassword->setText(RPCPassword);
+
+        } else if (line.section("=", 0, 0) == "server") {
+            serverEnabled = line.section("=", 1, 1).toInt();
+            ui->checkBox_server->setChecked(serverEnabled);
+
+        } else if (line.section("=", 0, 0) == "rpcport") {
+            RPCPort = line.section("=", 1, 1).toInt();
+            ui->lineEdit_rpcPort->setText(QString::number(RPCPort));
+
+        } else if (line.section("=", 0, 0) == "gen") {
+            generateEnabled = line.section("=", 1, 1).toInt();
+            ui->checkBox_generate->setChecked(generateEnabled);
+
+        } else if (line.section("=", 0, 0) == "addnode") {
+            ui->radioButton_addNodes->setChecked(true);
+            QString node = line.section("=", 1, 1);
+            ui->listWidget_nodes->addItem(node);
+
+        } else if (line.section("=", 0, 0) == "connect") {
+            ui->radioButton_connectOnly->setChecked(true);
+            QString node = line.section("=", 1, 1);
+            ui->listWidget_nodes->addItem(node);
+
+        } else if (line.section("=", 0, 0) == "testnet") {
+            testnetEnabled = line.section("=", 1, 1).toInt();
+            ui->checkBox_testnet->setChecked(testnetEnabled);
+
+        } else if (line.section("=", 0, 0) == "min") {
+            startMinEnabled = line.section("=", 1, 1).toInt();
+            ui->checkBox_startMini->setChecked(startMinEnabled);
+
+        } else if (line.section("=", 0, 0) == "minimizetotray") {
+            startTrayedEnabled = line.section("=", 1, 1).toInt();
+            ui->checkBox_startTrayed->setChecked(startTrayedEnabled);
+
+        } else if (line.section("=", 0, 0) == "allowreceivebyip") {
+            receiveByIPEnabled = line.section("=", 1, 1).toInt();
+            ui->checkBox_receiveByIP->setChecked(receiveByIPEnabled);
+
+        } else if (line.section("=", 0, 0) == "maxconnections") {
+            maxConnections = line.section("=", 1, 1).toInt();
+            ui->spinBox_maxConnections->setValue(maxConnections);
+
+        } else if (line.section("=", 0, 0) == "rpctimeout") {
+            rpcTimeout = line.section("=", 1, 1).toInt();
+            ui->spinBox_RPCTimeout->setValue(rpcTimeout);
+
+        } else if (line.section("=", 0, 0) == "rpcallowip") {
+            allowedIP = line.section("=", 1, 1);
+            ui->lineEdit_RPCAllowIP->setText(allowedIP);
+
+        } else if (line.section("=", 0, 0) == "rpcconnect") {
+            rpcConnectForward = line.section("=", 1, 1);
+            ui->lineEdit_RPCConnect->setText(rpcConnectForward);
+
+        } else if (line.section("=", 0, 0) == "proxy") {
+            proxy = line.section("=", 1, 1);
+            ui->lineEdit_socks4->setText(proxy);
+        }
+    }
+}
+
+void ConfCreationWidget::resetUI()
+{
+    ui->lineEdit_detectedLocation->clear();
+    ui->checkBox_server->setChecked(false);
+    ui->lineEdit_rpcPort->clear();
+    ui->lineEdit_rpcUser->clear();
+    ui->lineEdit_rpcPassword->clear();
+    ui->checkBox_generate->setChecked(false);
+    ui->listWidget_nodes->clear();
+    ui->checkBox_testnet->setChecked(false);
+    ui->checkBox_startMini->setChecked(false);
+    ui->checkBox_startTrayed->setChecked(false);
+    ui->checkBox_receiveByIP->setChecked(false);
+    ui->spinBox_maxConnections->setValue(0);
+    ui->spinBox_RPCTimeout->setValue(0);
+    ui->lineEdit_RPCAllowIP->clear();
+    ui->lineEdit_RPCConnect->clear();
+    ui->lineEdit_socks4->clear();
 }

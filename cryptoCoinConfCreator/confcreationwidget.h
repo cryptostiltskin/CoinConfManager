@@ -4,6 +4,7 @@
 #define CONFCREATIONWIDGET_H
 
 #include <QWidget>
+#include <QStringList>
 
 namespace Ui {
 class ConfCreationWidget;
@@ -33,7 +34,27 @@ public:
      *
      */
     bool writeConfFile();
-    
+    // List of strings read line by line from existing conf
+    QStringList get_ConfFileStrings();
+
+    // Get Functions
+    QString get_confDirectory();
+    bool get_serverEnabled();
+    int get_RPCPort();
+    QString get_RPCUser();
+    QString get_RPCPassword();
+    bool get_generateEnabled();
+    bool get_addNodesEnabled();
+    bool get_connectOnlyEnabled();
+    bool get_testnetEnabled();
+    bool get_startMinEnabled();
+    bool get_startTrayedEnabled();
+    bool get_receiveByIPEnabled();
+    int get_maxConnections();
+    int get_rpcTimeout();
+    QString get_coinName();
+    void loadExistingFromConf();
+
 private slots:
     void on_pushButton_browse_clicked();
 
@@ -69,11 +90,20 @@ private slots:
 
     void on_pushButton_clearNodeList_clicked();
 
+    // Clear out the ui and all text
+    void resetUI();
+
+signals:
+    void confWidgetClosing();
+
 private:
     Ui::ConfCreationWidget *ui;
     int selectCoinIndex;
     QString confDirectory;
+    QString rpcConnectForward;
     bool serverEnabled;
+    QString allowedIP;
+    QString proxy;
     int RPCPort;
     QString RPCUser;
     QString RPCPassword;
